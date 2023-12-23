@@ -1,0 +1,59 @@
+server:
+  servlet:
+    context-path: /api
+
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        hibernate.jdbc.time_zone: GMT+7
+  main:
+    allow-bean-definition-overriding: true
+springfox:
+  documentation:
+    swagger:
+      v2:
+        path: /api/v2/docs
+
+fasto:
+  security:
+    authentication:
+      jwt:
+        secret: fasto
+        token-validity-in-seconds: 86400
+        token-validity-in-seconds-for-remember-me: 2562000
+  cors:
+    allowed-origins: '*'
+    allowed-methods: '*'
+    allowed-headers: '*'
+    exposed-headers: 'Authorization'
+    allow-credentials: false
+    max-age: 1800
+  mail:
+    from: nguyenxuanduc012345@gmail.com
+  s3:
+    aws:
+      credentials:
+        accessKey: AKIAQMYMS4DRQ34ZO3NZ
+        secretKey: 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
+      bucketName: fasto-project
+      region: ap-northeast-1
+      pre-signed-expired: 60
+  redis:
+    port: 6379
+    password: fasto
+    host: 103.82.27.220
+    expire-time: 15
+  vn-pay:
+    version: 2.1.0
+    command: pay
+    tmn-code: J1SBAGO8
+    curr-code: VND
+    hash-secret: BAIXLPWHBOKKCFWPDZERJSZGDSLGQWDG
+    pay-url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+    api-url: https://sandbox.vnpayment.vn/merchant_webapi/merchant.html
+  firebase:
+    service-account: classpath:config/fcm/firebase-service-account.json

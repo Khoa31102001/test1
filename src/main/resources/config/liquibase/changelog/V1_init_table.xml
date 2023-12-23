@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+    <changeSet id="V1_init_table" author="KhoaLGA" >
+        <sql dbms="mysql" splitStatements="true" stripComments="true">
+            create table category
+            (
+                id             bigint auto_increment
+                    primary key,
+                name           varchar(255)                        not null,
+                delete_flag    tinyint   default 0                 not null,
+                created_at     timestamp default CURRENT_TIMESTAMP not null,
+                modified_at    timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                category_image varchar(255)                        not null,
+                constraint fk_category_name_1
+                    unique (name)
+            );
+
+            create table location
+            (
+                id             bigint auto_increment
+                    primary key,
+                city           varchar(100)                        not null,
+                country        varchar(100)                        not null,
+                street_address varchar(100)                        not null,
+                state_province varchar(100)                        not null,
+                created_at     timestamp default CURRENT_TIMESTAMP not null,
+                modified_at    timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                x              double                              null,
+                y              double                              null,
+                constraint fk_location_1
+                    unique (x, y)
+            );
+
+            create table news
+            (
+                id          bigint auto_increment
+                    primary key,
+                created_at  timestamp default CURRENT_TIMESTAMP not null,
+                modified_at timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                title       text                                null,
+                location    varchar(255)                        null,
+                content     varchar(255)                        null,
+                image       varchar(255)                        null,
+                sub_title   varchar(255)                        null,
+                address     varchar(255)                        null
+            );
+
+            create table role
+            (
+                id          bigint auto_increment
+                    primary key,
+                name        varchar(100)                        not null,
+                created_at  timestamp default CURRENT_TIMESTAMP not null,
+                modified_at timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                constraint unique_role_name_1
+                    unique (name)
+            );
+
+            create table user
+            (
+                id           bigint auto_increment
+                    primary key,
+                email        varchar(50)                         null,
+                password     varchar(255)                        null,
+                provider     varchar(255)                        null,
+                phone_number varchar(50)                         null,
+                status       varchar(50)                         null,
+                expired_time timestamp default CURRENT_TIMESTAMP null,
+                auth_code  varchar(50)                         null,
+                oauth_id     varchar(255)                        null,
+                created_at   timestamp default CURRENT_TIMESTAMP not null,
+                modified_at  timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                constraint unique_user_email_1
+                    unique (email),
+                constraint unique_user_phone_number_1
+                    unique (phone_number),
+                constraint unique_user_reset_token_1
+                    unique (auth_code)
+            );
+
+            create table device_token_info
+            (
+                id          bigint auto_increment
+                    primary key,
+                user_id     bigint                              not null,
+                token       text                                not null,
+                is_disable  tinyint   default 0                 not null,
+                created_at  timestamp default CURRENT_TIMESTAMP not null,
+                modified_at timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                constraint fk_device_token_user
+                    foreign key (user_id) references user (id)
+            )
+                charset = utf8mb3;
+
+            create table shop
+            (
+                id              bigint auto_increment
+                    primary key,
+                name            varchar(50)                         null,
+                banner          varchar(1000)                       null,
+                description     varchar(1000)                       null,
+                schedule_active varchar(50)                         null,
+                phone           varchar(50)                         null,
+                user_id         bigint                              not null,
+                location_id     bigint                              null,
+                created_at      timestamp default CURRENT_TIMESTAMP not null,
+                modified_at     timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                start_ratings   double                              null,
+                ratings         double                              null,
+                constraint fk_shop_name_1
+                    unique (name),
+                constraint fk_location_shop_1
+                    foreign key (location_id) references location (id),
+                constraint fk_user_shop_1
+                    foreign key (user_id) references user (id)
+            );
+
+            create table product
+            (
+                id          bigint auto_increment
+                    primary key,
+                name        varchar(255)                        not null,
+                image       varchar(255)                        null,
+                description varchar(255)                        null,
+                price       decimal                             not null,
+                status      varchar(50)                         null,
+                created_at  timestamp default CURRENT_TIMESTAMP not null,
+                modified_at timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                category_id bigint                              not null,
+                shop_id     bigint                              not null,
+                delete_flag tinyint   default 0                 not null,
+                count_pay   bigint                              null,
+                constraint pk_product_1
+                    foreign key (category_id) references category (id),
+                constraint pk_product_2
+                    foreign key (shop_id) references shop (id)
+            );
+
+            create table product_image
+            (
+                id          bigint auto_increment
+                    primary key,
+                image       varchar(255)                        null,
+                product_id  bigint                              null,
+                created_at  timestamp default CURRENT_TIMESTAMP not null,
+                modified_at timestamp default CURRENT_TIMESTAMP not null,
+                constraint fk_product_image
+                    foreign key (product_id) references product (id)
+            );
+
+            create table ratings
+            (
+                id          bigint auto_increment
+                    primary key,
+                created_at  timestamp default CURRENT_TIMESTAMP not null,
+                modified_at timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                user_id     bigint                              null,
+                shop_id     bigint                              null,
+                ratings     double                              null,
+                content     varchar(255)                        null,
+                constraint fk_ratings_1
+                    foreign key (shop_id) references shop (id),
+                constraint fk_ratings_2
+                    foreign key (user_id) references user (id)
+            );
+
+            create table recent_shop
+            (
+                id          bigint auto_increment
+                    primary key,
+                created_at  timestamp default CURRENT_TIMESTAMP not null,
+                modified_at timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                shop_id     bigint                              null,
+                user_id     bigint                              null,
+                constraint fk_recent_1
+                    foreign key (shop_id) references shop (id),
+                constraint fk_recent_2
+                    foreign key (user_id) references user (id)
+            );
+
+            create table review
+            (
+                id          bigint auto_increment
+                    primary key,
+                created_at  timestamp default CURRENT_TIMESTAMP not null,
+                modified_at timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                content     text                                null,
+                title       varchar(255)                        null,
+                shop_id     bigint                              null,
+                user_id     bigint                              null,
+                delete_flag tinyint   default 0                 not null,
+                constraint fk_review_1
+                    foreign key (shop_id) references shop (id),
+                constraint fk_review_2
+                    foreign key (user_id) references user (id)
+            );
+
+            create table reply
+            (
+                id          bigint auto_increment
+                    primary key,
+                created_at  timestamp default CURRENT_TIMESTAMP not null,
+                modified_at timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                content     text                                null,
+                review_id   bigint                              null,
+                user_id     bigint                              null,
+                constraint fk_reply_1
+                    foreign key (review_id) references review (id),
+                constraint fk_reply_2
+                    foreign key (user_id) references user (id)
+            );
+
+            create table re_reply
+            (
+                id          bigint auto_increment
+                    primary key,
+                created_at  timestamp default CURRENT_TIMESTAMP not null,
+                modified_at timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                content     text                                null,
+                reply_id    bigint                              null,
+                user_id     bigint                              null,
+                review_id   bigint                              null,
+                constraint fk_re_reply_1
+                    foreign key (reply_id) references reply (id),
+                constraint fk_re_reply_2
+                    foreign key (user_id) references user (id),
+                constraint fk_re_reply_review_1
+                    foreign key (review_id) references review (id)
+            );
+
+            create table review_images
+            (
+                id          bigint auto_increment
+                    primary key,
+                created_at  timestamp default CURRENT_TIMESTAMP not null,
+                modified_at timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                images_url  varchar(255)                        null,
+                review_id   bigint                              null,
+                constraint fk_review_images_1
+                    foreign key (review_id) references review (id)
+            );
+
+            create table shop_favourite
+            (
+                id          bigint auto_increment
+                    primary key,
+                user_id     bigint                              not null,
+                shop_id     bigint                              not null,
+                created_at  timestamp default CURRENT_TIMESTAMP not null,
+                modified_at timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                constraint fk_shop_favorite_1
+                    unique (user_id, shop_id),
+                constraint fk_favourite_1
+                    foreign key (shop_id) references shop (id),
+                constraint fk_favourite_2
+                    foreign key (user_id) references user (id)
+            );
+
+            create table shop_image
+            (
+                id          bigint auto_increment
+                    primary key,
+                image       varchar(255)                        null,
+                shop_id     bigint                              null,
+                created_at  timestamp default CURRENT_TIMESTAMP not null,
+                modified_at timestamp default CURRENT_TIMESTAMP not null,
+                constraint fk_banner
+                    foreign key (shop_id) references shop (id)
+            );
+
+            create table user_favorite_re_reply
+            (
+                id          bigint auto_increment
+                    primary key,
+                user_id     bigint                              not null,
+                re_reply_id bigint                              not null,
+                created_at  timestamp default CURRENT_TIMESTAMP not null,
+                modified_at timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                constraint fk_user_favorite_re_reply_1
+                    foreign key (user_id) references user (id),
+                constraint fk_user_favorite_re_reply_2
+                    foreign key (re_reply_id) references re_reply (id)
+            )
+                charset = utf8mb3;
+
+            create table user_favorite_reply
+            (
+                id          int auto_increment
+                    primary key,
+                user_id     bigint                              not null,
+                reply_id    bigint                              not null,
+                created_at  timestamp default CURRENT_TIMESTAMP not null,
+                modified_at timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                constraint fk_user_favorite_reply_1
+                    foreign key (user_id) references user (id),
+                constraint fk_user_favorite_reply_2
+                    foreign key (reply_id) references reply (id)
+            )
+                charset = utf8mb3;
+
+            create table user_favorite_review
+            (
+                id          int auto_increment
+                    primary key,
+                user_id     bigint                              not null,
+                review_id   bigint                              not null,
+                created_at  timestamp default CURRENT_TIMESTAMP not null,
+                modified_at timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                delete_flag tinyint   default 0                 not null,
+                constraint fk_user_favorite_review_1
+                    foreign key (user_id) references user (id),
+                constraint fk_user_favorite_review_2
+                    foreign key (review_id) references review (id)
+            )
+                charset = utf8mb3;
+
+            create table user_information
+            (
+                id          bigint auto_increment
+                    primary key,
+                user_id     bigint                              not null,
+                first_name  varchar(255)                        null,
+                last_name   varchar(255)                        null,
+                gender      varchar(255)                        null,
+                birthday    timestamp                           null,
+                user_image  text                                null,
+                created_at  timestamp default CURRENT_TIMESTAMP not null,
+                modified_at timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                constraint fk_user_information_1
+                    foreign key (user_id) references user (id)
+            );
+
+            create table user_role
+            (
+                id          bigint auto_increment
+                    primary key,
+                user_id     bigint                              not null,
+                role_id     bigint                              not null,
+                created_at  timestamp default CURRENT_TIMESTAMP not null,
+                modified_at timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                constraint unique_user_role_1
+                    unique (user_id, role_id),
+                constraint fk_user_role_1
+                    foreign key (user_id) references user (id),
+                constraint fk_user_role_2
+                    foreign key (role_id) references role (id)
+            );
+
+            create table vnpay_token_info
+            (
+                id          bigint auto_increment
+                    primary key,
+                user_id     bigint                               not null,
+                bank_code   text                                 not null,
+                token       text                                 not null,
+                card_number text                                 not null,
+                created_at  timestamp  default CURRENT_TIMESTAMP not null,
+                modified_at timestamp  default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                is_default  tinyint(1) default 0                 not null,
+                delete_flag tinyint    default 0                 not null,
+                constraint fk_vnpay_token_info_1
+                    foreign key (user_id) references user (id)
+            );
+
+            create table voucher
+            (
+                id             bigint auto_increment
+                    primary key,
+                name           varchar(50)                         not null,
+                created_at     timestamp default CURRENT_TIMESTAMP not null,
+                ended_at       timestamp default CURRENT_TIMESTAMP not null,
+                shop_id        bigint                              not null,
+                user_type      varchar(50)                         not null,
+                value_discount double                              null,
+                voucher_type   varchar(50)                         null,
+                value_need     double                              null,
+                limit_per_user bigint                              not null,
+                max_discount   double                              null,
+                quantity       bigint                              null,
+                image          varchar(255)                        null,
+                descriptions   varchar(255)                        null,
+                status         varchar(255)                        null,
+                started_at     timestamp default CURRENT_TIMESTAMP not null,
+                modified_at    timestamp default CURRENT_TIMESTAMP not null,
+                constraint fk_voucher_shop_1
+                    foreign key (shop_id) references shop (id)
+            );
+
+            create table bill
+            (
+                id            bigint auto_increment
+                    primary key,
+                user_id       bigint                              not null,
+                shop_id       bigint                              not null,
+                voucher_id    bigint                              null,
+                billtotal_origin  decimal                             not null,
+                total_voucher decimal   default 0                 not null,
+                total_payment decimal                             not null,
+                status        varchar(50)                         null,
+                created_at    timestamp default CURRENT_TIMESTAMP not null,
+                modified_at   timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                expired_time  timestamp                           not null,
+                code          varchar(255)                        null,
+                expired_code  timestamp                           null,
+                note          varchar(255)                        null,
+                is_rating     bit                                 null,
+                ratings       double                              null,
+                url_payment   varchar(1000)                       null,
+                constraint fk_shop_bill
+                    foreign key (shop_id) references shop (id),
+                constraint fk_user_bill
+                    foreign key (user_id) references user (id),
+                constraint fk_voucher_bill
+                    foreign key (voucher_id) references voucher (id)
+            );
+
+            create table bill_item
+            (
+                id          bigint auto_increment
+                    primary key,
+                product_id  bigint                              null,
+                shop_id     bigint                              null,
+                user_id     bigint                              null,
+                bill_id     bigint                              null,
+                amount      bigint                              null,
+                created_at  timestamp default CURRENT_TIMESTAMP not null,
+                modified_at timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                constraint fk_bill_bill_item
+                    foreign key (bill_id) references bill (id),
+                constraint fk_product_bill_item
+                    foreign key (product_id) references product (id),
+                constraint fk_shop_bill_item
+                    foreign key (shop_id) references shop (id),
+                constraint fk_user_bill_item
+                    foreign key (user_id) references user (id)
+            );
+
+            create table payment
+            (
+                id           bigint auto_increment
+                    primary key,
+                name         varchar(50)                         null,
+                created_at   timestamp default CURRENT_TIMESTAMP not null,
+                modified_at  timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                bill_id      bigint                              not null,
+                payment_info varchar(1000)                       not null,
+                status       tinyint   default 0                 not null,
+                constraint fk_bill_payment
+                    foreign key (bill_id) references bill (id)
+            );
+
+            create table voucher_image
+            (
+                id          bigint auto_increment
+                    primary key,
+                image       varchar(255)                        null,
+                voucher_id  bigint                              null,
+                created_at  timestamp default CURRENT_TIMESTAMP not null,
+                modified_at timestamp default CURRENT_TIMESTAMP not null,
+                constraint fk_voucher_image
+                    foreign key (voucher_id) references voucher (id)
+            );
+
+            create table voucher_user
+            (
+                id          bigint auto_increment
+                    primary key,
+                voucher_id  bigint                              not null,
+                user_id     bigint                              not null,
+                created_at  timestamp default CURRENT_TIMESTAMP not null,
+                modified_at timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+                used        int                                 null,
+                constraint fk_voucher_user_1
+                    foreign key (user_id) references user (id),
+                constraint fk_voucher_user_2
+                    foreign key (voucher_id) references voucher (id)
+            );
+
+        </sql>
+    </changeSet>
+</databaseChangeLog>

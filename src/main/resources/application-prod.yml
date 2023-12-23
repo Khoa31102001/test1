@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://103.82.27.220:3306/fasto
+    username: root
+    password: abcd123e
+    hikari:
+      auto-commit: false
+      pool-name: hikari
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+  liquibase:
+    change-log: classpath:config/liquibase/master.xml
+#    enabled: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: anhkhoalegia3@gmail.com
+    password: henzxqozqubxynlj
+    properties.mail.smtp:
+      auth: true
+      starttls.enable: true
+      ssl.trust: smtp.gmail.com

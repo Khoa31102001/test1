@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <include file="config/liquibase/changelog/V1_init_table.xml"/>
+    <include file="config/liquibase/changelog/V2_add_new_column_deposit_for_shop.xml"/>
+    <include file="config/liquibase/changelog/V3_add_new_column_url_payment_deposit_for_shop.xml"/>
+    <include file="config/liquibase/changelog/V4_add_new_column_shop_id_for_payment.xml"/>
+    <include file="config/liquibase/changelog/V5_add_new_column_type_for_table_payment.xml"/>
+    <include file="config/liquibase/changelog/V6_delete_columne_shop_and _payment_table.xml"/>
+<!--    <include file="config/liquibase/changelog/V7_add_column_shipping_fee_for_bill.xml"/>-->
+</databaseChangeLog>

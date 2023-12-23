@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+    <changeSet id="V7_add_column_shipping_fee_for_bill" author="KhoaLGA" >
+        <sql dbms="mysql" splitStatements="true" stripComments="true">
+            ALTER TABLE bill ADD COLUMN shipping_fee decimal not null;
+        </sql>
+    </changeSet>
+</databaseChangeLog>

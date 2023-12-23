@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+    <changeSet id="V6_delete_columne_shop_and _payment_table" author="KhoaLGA">
+        <sql dbms="mysql" splitStatements="true" stripComments="true">
+            ALTER TABLE `payment`
+            DROP CONSTRAINT `fk_payment_shop_deposit`;
+            ALTER TABLE `payment`
+            DROP COLUMN `shop_id`;
+            ALTER TABLE `shop`
+            DROP COLUMN `url_payment_deposit`;
+        </sql>
+    </changeSet>
+</databaseChangeLog>
+

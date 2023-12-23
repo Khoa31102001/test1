@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+    <changeSet id="V4_add_new_column_shop_id_for_payment" author="KhoaLGA">
+        <sql dbms="mysql" splitStatements="true" stripComments="true">
+            alter table `payment` add column
+                `shop_id` bigint;
+            alter table `payment` ADD CONSTRAINT `fk_payment_shop_deposit` FOREIGN KEY (`shop_id`) REFERENCES
+                `shop` (`id`);
+        </sql>
+    </changeSet>
+</databaseChangeLog>

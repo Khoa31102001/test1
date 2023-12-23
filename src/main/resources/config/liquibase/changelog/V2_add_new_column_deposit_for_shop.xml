@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+    <changeSet id="V2_add_new_column_deposit_for_shop" author="KhoaLGA" >
+        <sql dbms="mysql" splitStatements="true" stripComments="true">
+            ALTER TABLE shop ADD COLUMN is_deposit bit;
+        </sql>
+    </changeSet>
+</databaseChangeLog>
